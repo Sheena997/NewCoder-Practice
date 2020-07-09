@@ -66,6 +66,7 @@ int main()
     
     map<int, int> mp;
     set<int> res;
+	//第一个窗口
     for (int i = 0; i < m; ++i)
     {
         for (int j = 0; j < c && arr[i][j] != 0; ++j)
