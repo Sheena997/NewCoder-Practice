@@ -31,6 +31,12 @@ using namespace std;
  
 const int MOD = 1000000007;
  
+/*
+滚动数组
+dp[level & 1][j] 表示前level层放j个石头
+个数比较少的那个颜色的石头，假定为绿色
+这样在两种颜色不均匀时，可以优化复杂度
+*/ 
 int theDoubleColorTower(int a, int b)
 {
     if(a == 0 && b == 0)
@@ -40,24 +46,37 @@ int theDoubleColorTower(int a, int b)
     if(a > b)
         swap(a, b);
      
-    vector<int> dp(300001, 0);
-    int t = 1, l = 0, r = 0, s = 0;
-    dp[0] = dp[1] = 1;
+    vector<vector<int>> dp(2, vector<int>(300001, 0));
+    int sum = 1, l = 0, r = 0, s = 0;
+    dp[1][0] = dp[1][1] = 1;
+	int cur = 0, last = 0;
     for(int i = 2; i <= sqrt(2 * (a + b)); ++i)
     {
-        t += i;
-        int q = min(t, a), p = max(t - b, 0);
+        sum += i;
+        int q = min(sum, a);//前i层最多要放的绿石个数，但是不能超过绿石的总数a
+		//最坏情况，前i层将b个红石放完（sum - b > 0），那么前i层至少放sum-b个绿石
+		//若sum - b < 0, 说明前i层最少可以不放红石，即dp[i][j]中j从0开始更新
+		//综上，j的更新范围下界为max(sum - b, 0)
+		int p = max(sum - b, 0);
+        //下届大于上界，说明红石放完，绿石数量也不够放下一层了，那么就是最高层了，不再更新
         if(p > q)
             break;
         r = q;
         l = p;
-        for(int j = r; j >= i + 1; --j)
-            dp[j] = (dp[j] + dp[j - i]) % MOD;
-        ++dp[i];
+		cur = i & 1;
+		last = !cur;
+		//dp[j]表示第i层放红石，
+		//dp[j - i]表示第i层放绿石（那么前i层至少有i个绿石（即 j >= i））
+		//转移方程：dp[j] = dp[j] + dp[j - i]
+		//前i层的绿石少于j，说明第i层只可能放了红石：dp[j] = dp[j];
+        for(int j = l; j < i; ++j)
+			dp[cur][j] = dp[last][j];
+        for(int j = i; j <= q; ++j)
+			dp[cur][j] = (dp[last][j] + dp[last][j - i]) % MOD;
     }
      
     for(int i = l; i <= r; ++i)
-        s = (s + dp[i]) % MOD;
+        s = (s + dp[cur][i]) % MOD;
     return s;
 }
 int main()
