@@ -16,6 +16,7 @@ public:
         sort(rotateArray.begin(), rotateArray.end());
         return rotateArray[0];
         */
+        /*
         //双指针法，使时间复杂度低
         int left = 0, right = rotateArray.size() - 1;
         while(left < right)
@@ -35,5 +36,34 @@ public:
             
         }
         return rotateArray[left];
+        */
+        //二分查找
+        if(rotateArray.size() <= 0)
+            return 0;
+        int left = 0, right = rotateArray.size() - 1, mid = 0;
+        while(left < right)
+        {
+            mid = left + ((right - left) >> 1);
+            if(right - left == 1)
+            {
+                mid = right;
+                break;
+            }
+            if(rotateArray[mid] == rotateArray[left] && rotateArray[left] == rotateArray[right])
+            {
+                int res = rotateArray[left];
+                for(int i = left + 1; i < right; ++i)
+                    if(res > rotateArray[i])
+                        res = rotateArray[i];
+                return res;
+            }
+            
+            if(rotateArray[left] <= rotateArray[mid])
+                left = mid;
+            else
+                right = mid;
+        }
+        
+        return rotateArray[mid];
     }
 };
