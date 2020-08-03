@@ -9,14 +9,17 @@
 class Solution {
 public:
     bool Find(int target, vector<vector<int> > array) {
-        for(int i = 0; i < array.size(); ++i)
+        int i = 0, j = array[0].size() - 1;
+        while(i < array.size() && j >= 0)
         {
-            for(int j = 0; j < array[i].size(); ++j)
-            {
-                if(target == array[i][j])
-                    return true;
-            }
+            if(array[i][j] > target)
+                --j;
+            else if(array[i][j] < target)
+                ++i;
+            else
+                return true;
         }
+        
         return false;
     }
 };
