@@ -26,3 +26,42 @@ class Solution {
         return v;
     }
 };
+
+class Solution {
+public:
+    vector<int> printListFromTailToHead(ListNode* head) {
+        stack<int> st;
+        while(head != nullptr)
+        {
+            st.push(head->val);
+            head = head->next;
+        }
+        vector<int> vc;
+        while(!st.empty())
+        {
+            vc.push_back(st.top());
+            st.pop();
+        }
+         
+        return vc;
+    }
+};
+
+class Solution {
+public:
+    void _printListFromTailToHead(ListNode* head, vector<int>& vc)
+    {
+        if(head == nullptr)
+            return;
+        
+        _printListFromTailToHead(head->next, vc);
+        vc.push_back(head->val);
+    }
+    vector<int> printListFromTailToHead(ListNode* head) {
+        vector<int> vc;
+        
+        _printListFromTailToHead(head, vc);
+        
+        return vc;
+    }
+};
